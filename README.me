@@ -1,0 +1,88 @@
+# Simple CI/CD Pipeline with Jenkins and Docker.
+This repository provides a simple Jenkins pipeline for automating the process of building and deploying a Node.js application using Docker.
+
+## Prerequisites
+
+Before you begin, ensure that you have the following set up:
+
+- **Jenkins** installed and running on your server.
+- **Docker** installed and configured on the machine running Jenkins.
+- **Node.js** and **npm** installed in the repository you're building.
+- **Docker Hub account** to push Docker images.
+- **GitHub repository** with your application code.
+
+## Setup Instructions
+
+### 1. Create a Jenkins Pipeline Job
+1. Log in to your Jenkins server.
+2. Create a new **Pipeline** job.
+3. In the Pipeline section, choose **Pipeline script** and paste the contents of the `Jenkinsfile` provided above.
+
+### 2. Configure Jenkins with Docker Hub Credentials
+To push the Docker image to Docker Hub, you need to provide your Docker Hub credentials to Jenkins.
+
+1. Go to **Jenkins Dashboard** > **Manage Jenkins** > **Manage Credentials** > **(select a domain)**.
+2. Click on **Add Credentials**.
+3. Select **Username with password** for the kind of credential.
+4. Provide your Docker Hub username and password.
+5. Assign a unique **ID** (e.g., `dockerhub-creds`), which will be used in the Jenkinsfile.
+
+### 3. Set up the Docker Environment
+
+Ensure that Jenkins has the necessary permissions to interact with Docker on the host machine. This can be done by adding the Jenkins user to the `docker` group:
+
+```bash
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+This will allow Jenkins to run Docker commands on the host system.
+
+
+4. Update the GitHub Repository URL
+In the Jenkinsfile, update the GIT_REPO environment variable with the URL of your GitHub repository:
+GIT_REPO = 'https://github.com/YourUsername/YourApp.git'
+Replace YourUsername and YourApp with your actual GitHub username and repository name.
+
+5. Commit and Push the Jenkinsfile
+Add, commit, and push the Jenkinsfile to your GitHub repository:
+git add Jenkinsfile
+git commit -m "Add Jenkins pipeline for CI/CD"
+git push origin main
+
+6. Trigger the Pipeline
+After setting up the pipeline in Jenkins and committing the changes, you can trigger the build either manually or automatically when changes are pushed to the GitHub repository.
+
+7. Monitor the Build
+You can monitor the progress of the build in the Jenkins dashboard. The pipeline will go through the following stages:
+Clone Repository: Jenkins will clone the Git repository.
+Install Dependencies: Jenkins will install the Node.js dependencies using npm install.
+Build Docker Image: Jenkins will build the Docker image for your application.
+Run Docker Container: Jenkins will run the Docker container based on the image.
+Push to Docker Hub: Jenkins will push the Docker image to Docker Hub.
+
+8. View Results
+After the build completes, you can see the result on the Jenkins dashboard. If successful, the Docker image will be available in your Docker Hub account.
+Troubleshooting
+If you encounter permission errors with Docker, ensure Jenkins is added to the Docker group (sudo usermod -aG docker jenkins) and has permission to access the Docker socket.
+Ensure your Docker Hub credentials are correctly configured in Jenkins and that your account has the necessary permissions to push images.
+
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+### **Explanation:**
+
+1. **Jenkinsfile:**
+   - **Stages:**
+     - **Clone Repository**: Jenkins clones your Git repository.
+     - **Install Dependencies**: Installs the dependencies for the Node.js application.
+     - **Build Docker Image**: Builds a Docker image using the `Dockerfile` located in the root of your repository.
+     - **Run Docker Container**: Stops and removes any existing container with the name `nodejs-app` and runs a new one.
+     - **Push to Docker Hub**: Logs in to Docker Hub using Jenkins credentials and pushes the image to Docker Hub.
+
+2. **README.md:**
+   - Explains the setup of the Jenkins pipeline, including prerequisites, setup instructions, and troubleshooting tips.
+
+Now, you should have a complete and working pipeline for CI/CD to build and deploy your application using Docker!
+
+
+
+
